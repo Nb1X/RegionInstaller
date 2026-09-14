@@ -40,14 +40,12 @@ The modded regions are not managed by me. If you have a problem, contact the reg
 
 Niko233 regions website: https://au.niko233.top
 
-Modded EU, Modded AS and Modded NA regions doesn't have a website yet.
+Modded EU/NA/AS régions website: https://duikbo.at
 
 For more information, see [Informations](INFO.md).
 
 For mod developers that want to integrate this plugin to their mods, you can. See [license here](LICENSE).
 
 All of the listed regions use a custom, open-source server called [Impostor](https://github.com/Impostor/Impostor). You can host it yourself on a VPS, a [Raspberry Pi](https://raspberrypi.com) or an old laptop, and it is under GPL-v3.0 License.
-
-(Niko233 servers are using a custom build of Impostor available [here](https://github.com/NikoCat233/Impostor))
 
 To use BETA builds of this plugin, go to the [Actions](https://github.com/BetterUsProject/AUModdedRegions/actions) of this repository (sometimes, normal versions are also on Actions).

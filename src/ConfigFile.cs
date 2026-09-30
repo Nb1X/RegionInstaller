@@ -35,41 +35,34 @@ Dtls = false
 Port = 443, 22023
 
 [Region 3]
-Name = Niko_EU
-Address = au-eu.niko233.top
-Https = true
-Dtls = false
-Port = 443, 22023
-
-[Region 4]
 Name = Niko_AS
 Address = au-as.niko233.top
 Https = true
 Dtls = false
 Port = 443, 22023
 
-[Region 5]
+[Region 4]
 Name = Modded NA
 Address = aumods.org
 Https = true
 Dtls = false
 Port = 443, 22023
 
-[Region 6]
+[Region 5]
 Name = Modded EU
 Address = au-eu.duikbo.at
 Https = true
 Dtls = false
 Port = 443, 22023
 
-[Region 7]
+[Region 6]
 Name = Modded AS
 Address = au-as.duikbo.at
 Https = true
 Dtls = false
 Port = 443, 22023
 
-[Region 8]
+[Region 7]
 Name = Default
 Address =
 Https =

@@ -44,19 +44,28 @@ namespace RegionInstaller
             {
                 ConfigData configData = ConfigFile.LoadOrCreate(RegionInstallerPlugin.ConfigPath);
 
-                if (configData.GlitchedLobbiesRegion)
-                {
-                    configData.KeepInnerslothRegions = true;
-                    GlitchedLobbies.AddGlitchedLobbiesRegion(configData.Regions);
-                }
+#if LITE
+                bool shouldDisableInnersloth = false;
+#else
+                bool shouldDisableInnersloth = RegionApi.IsInnerslothForcedDisabled();
+#endif
 
-                if (configData.KeepInnerslothRegions)
+                if (!shouldDisableInnersloth)
                 {
-                    InnerslothRegions.AddInnerslothRegions(configData.Regions);
+                    if (configData.GlitchedLobbiesRegion)
+                    {
+                        configData.KeepInnerslothRegions = true;
+                        GlitchedLobbies.AddGlitchedLobbiesRegion(configData.Regions);
+                    }
+
+                    if (configData.KeepInnerslothRegions)
+                    {
+                        InnerslothRegions.AddInnerslothRegions(configData.Regions);
+                    }
                 }
 
                 string regionJsonPath = Path.Combine(Application.persistentDataPath, "regionInfo.json");
-                RegionFileGenerator.RegenerateRegionFile(regionJsonPath, configData);
+                RegionFileGenerator.RegenerateRegionFile(regionJsonPath, configData, shouldDisableInnersloth);
 
                 if (ServerManager.Instance != null)
                 {

@@ -35,19 +35,31 @@ jobs:
       - name: Restore Dependencies
         run: dotnet restore
 
-      - name: Build Project (Development)
-        run: dotnet build --no-restore
+      - name: Build Project (Default)
+        run: dotnet build src/RegionInstaller.csproj --no-restore -c Default
 
-      - name: Upload Build Artifact
+      - name: Build Project (Lite)
+        run: dotnet build src/RegionInstaller.csproj --no-restore -c Lite
+
+      - name: Wait for file system sync
+        run: sleep 5
+
+      - name: Upload Build Artifact (Default)
         uses: actions/upload-artifact@v4
         with:
           name: RegionInstaller.dll
-          path: src/bin/Debug/net6.0/RegionInstaller.dll
+          path: src/bin/Default/net6.0/RegionInstaller.dll
 
-      - name: Upload Release Asset
+      - name: Upload Build Artifact (Lite)
+        uses: actions/upload-artifact@v4
+        with:
+          name: RegionInstallerLite.dll
+          path: src/bin/Lite/net6.0/RegionInstallerLite.dll
+
+      - name: Upload Release Asset (Default)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: src/bin/Debug/net6.0/RegionInstaller.dll
+          files: src/bin/Default/net6.0/RegionInstaller.dll
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

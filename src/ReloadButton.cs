@@ -44,8 +44,11 @@ namespace RegionInstaller
             {
                 ConfigData configData = ConfigFile.LoadOrCreate(RegionInstallerPlugin.ConfigPath);
 
-                // On vérifie si l'API a demandé de désactiver Innersloth de force
+#if LITE
+                bool shouldDisableInnersloth = false;
+#else
                 bool shouldDisableInnersloth = RegionApi.IsInnerslothForcedDisabled();
+#endif
 
                 if (!shouldDisableInnersloth)
                 {

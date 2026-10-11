@@ -15,15 +15,21 @@ namespace RegionInstaller
     public class RegionInstallerPlugin : BasePlugin
     {
         public const string Id = "com.nb1x.regioninstaller";
+        
+#if LITE
+        public const string Name = "RegionInstallerLite";
+#else
         public const string Name = "RegionInstaller";
-        public const string Version = "1.2.1";
+#endif
+
+        public const string Version = "1.0.0";
 
         public static string ConfigPath => Path.Combine(Paths.ConfigPath, "CustomRegions.cfg");
         public Harmony Harmony { get; } = new Harmony(Id);
 
         public override void Load()
         {
-            Log.LogInfo($"[RegionInstaller] Loading {Name} v{Version}...");
+            Log.LogInfo($"[{Name}] Loading {Name} v{Version}...");
 
             ConfigData configData = ConfigFile.LoadOrCreate(ConfigPath);
 
@@ -47,7 +53,7 @@ namespace RegionInstaller
             {
                 if (scene.name == "MainMenu")
                 {
-                    Log.LogInfo("[RegionInstaller] MainMenu loaded, injecting regions...");
+                    Log.LogInfo($"[{Name}] MainMenu loaded, injecting regions...");
                     InjectRegions(configData.Regions);
                 }
             }));
@@ -68,7 +74,7 @@ namespace RegionInstaller
                 var regionInfo = new StaticHttpRegionInfo(reg.Name, (StringNames)1003, reg.FullUrl, serversArray);
 
                 serverMngr.AddOrUpdateRegion(regionInfo.Cast<IRegionInfo>());
-                Log.LogInfo($"[RegionInstaller] Region '{reg.Name}' injected into memory.");
+                Log.LogInfo($"[{Name}] Region '{reg.Name}' injected into memory.");
             }
         }
     }

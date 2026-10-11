@@ -9,14 +9,14 @@ namespace RegionInstaller
 {
     public static class RegionFileGenerator
     {
-        public static void RegenerateRegionFile(string regionFilePath, ConfigData configData)
+        public static void RegenerateRegionFile(string regionFilePath, ConfigData configData, bool ignoreInnerslothAndGlitch = false)
         {
             try
             {
                 bool needsRewrite = true;
                 JsonNode? rootNode = null;
 
-                if (File.Exists(regionFilePath) && new FileInfo(regionFilePath).Length > 0)
+                if (!ignoreInnerslothAndGlitch && File.Exists(regionFilePath) && new FileInfo(regionFilePath).Length > 0)
                 {
                     string content = File.ReadAllText(regionFilePath);
                     rootNode = JsonNode.Parse(content);
@@ -29,26 +29,46 @@ namespace RegionInstaller
                     }
                 }
 
-                if (needsRewrite)
+                if (needsRewrite || ignoreInnerslothAndGlitch)
                 {
                     if (File.Exists(regionFilePath))
                     {
                         File.Delete(regionFilePath);
                     }
 
-                    Debug.Log("[RegionInstaller] Rewriting regionInfo.json...");
+                    Debug.Log("[RegionInstaller] Rewriting regionInfo.json (with strict filters if requested)...");
                     rootNode = CreateEmptyRegionStructure();
                     var regionsArray = rootNode["Regions"]!.AsArray();
 
-                    foreach (var reg in configData.Regions)
+                    var regionsToProcess = new List<ParsedRegion>(configData.Regions);
+
+                    if (!ignoreInnerslothAndGlitch)
+                    {
+                        if (configData.GlitchedLobbiesRegion)
+                        {
+                            GlitchedLobbies.AddGlitchedLobbiesRegion(regionsToProcess);
+                        }
+                        if (configData.KeepInnerslothRegions)
+                        {
+                            InnerslothRegions.AddInnerslothRegions(regionsToProcess);
+                        }
+                    }
+
+                    foreach (var reg in regionsToProcess)
                     {
                         if (!reg.IsValid) continue;
+                        
+                        if (ignoreInnerslothAndGlitch && InnerslothRegions.IsOfficialInnersloth(reg.Name))
+                        {
+                            continue;
+                        }
+
                         regionsArray.Add(BuildRegionNode(reg.Name, reg.FullUrl, reg.SelectedPort, reg.Dtls));
                     }
 
                     var options = new JsonSerializerOptions { WriteIndented = true };
                     File.WriteAllText(regionFilePath, rootNode.ToJsonString(options));
-                    Debug.Log("Region file reloaded!");
+                    Debug.Log("Region file reloaded successfully!");
                 }
             }
             catch (Exception ex)

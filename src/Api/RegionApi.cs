@@ -18,19 +18,15 @@ namespace RegionInstaller
             throw new NotSupportedException("RegionInstallerLite does not include the API, please use default RegionInstaller.");
         }
 
-        public static void DisableDtlsForAllRegions()
-        {
-            throw new NotSupportedException("RegionInstallerLite does not include the API, please use default RegionInstaller.");
-        }
-
         public static void ReloadRegionInfo()
         {
             throw new NotSupportedException("RegionInstallerLite does not include the API, please use default RegionInstaller.");
         }
+
+        internal static bool IsInnerslothForcedDisabled() => false;
 #else
         private static readonly List<ParsedRegion> DynamicRegions = new();
         private static bool forceDisableInnersloth = false;
-        private static bool forceDisableDtls = false;
 
         public static void AddRegion(string name, string address, bool https, bool dtls, ushort port1, ushort port2)
         {
@@ -69,19 +65,6 @@ namespace RegionInstaller
             Debug.Log("[RegionInstaller.Api] Innersloth regions forcefully disabled via API.");
         }
 
-        public static void DisableDtlsForAllRegions()
-        {
-            if (forceDisableDtls)
-            {
-                Debug.LogWarning("[RegionInstaller.Api] Dtls is already disabled by another plugin/API call!");
-                return;
-            }
-
-            forceDisableDtls = true;
-            TriggerRefresh();
-            Debug.Log("[RegionInstaller.Api] DTLS forcefully disabled for all regions via API.");
-        }
-
         public static void ReloadRegionInfo()
         {
             TriggerRefresh();
@@ -97,18 +80,6 @@ namespace RegionInstaller
             try
             {
                 ConfigData configData = ConfigFile.LoadOrCreate(RegionInstallerPlugin.ConfigPath);
-
-                if (forceDisableDtls)
-                {
-                    foreach (var reg in configData.Regions)
-                    {
-                        reg.Dtls = false;
-                    }
-                    foreach (var reg in DynamicRegions)
-                    {
-                        reg.Dtls = false;
-                    }
-                }
 
                 configData.Regions.AddRange(DynamicRegions);
 
